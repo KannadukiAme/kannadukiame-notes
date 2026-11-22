@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <style>
+    .bg { fill: #141918; stroke: #4ade80; }
+    .ring { stroke: #4ade80; stroke-opacity: 0.4; }
+    .book { stroke: #e5e7eb; }
+    .accent { stroke: #4ade80; }
+    .dot { fill: #a78bfa; }
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #f4faf7; stroke: #15803d; }
+      .ring { stroke: #15803d; stroke-opacity: 0.35; }
+      .book { stroke: #1f2937; }
+      .accent { stroke: #15803d; }
+      .dot { fill: #7c3aed; }
+    }
+  </style>
+  <rect class="bg" x="4" y="4" width="56" height="56" rx="14" stroke-width="2.5"/>
+  <circle class="ring" cx="32" cy="32" r="21" stroke-width="1.25" stroke-dasharray="3 3"/>
+  <!-- Stylized Grimoire Pages + Terminal Rune -->
+  <path class="book" d="M18 22.5C22.5 20.5 27.5 21 32 24C36.5 21 41.5 20.5 46 22.5V43.5C41.5 41.5 36.5 42 32 45C27.5 42 22.5 41.5 18 43.5V22.5Z" stroke-width="2.2" stroke-linejoin="round"/>
+  <path class="book" d="M32 24V45" stroke-width="2" stroke-linecap="round"/>
+  <!-- Terminal Prompt Chevron inside Left Page -->
+  <path class="accent" d="M22.5 29.5L26 32.5L22.5 35.5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Rune Lines on Right Page -->
+  <path class="accent" d="M36.5 30.5H41.5M36.5 35H40" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Arcane Star Node -->
+  <circle class="dot" cx="32" cy="14" r="2.5"/>
+</svg>

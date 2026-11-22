@@ -1,0 +1,107 @@
+@layer base, starlight, rapide, theme, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme inline {
+  --color-ui-bg: var(--sl-rapide-ui-bg-color, var(--sl-color-gray-6));
+  --color-ui-border: var(--sl-rapide-ui-border-color, var(--sl-color-gray-5));
+  --color-surface-subtle: var(--sl-color-gray-7);
+  --color-heading: var(--sl-color-white);
+  --color-body: var(--sl-color-gray-2);
+  --color-muted: var(--sl-color-gray-3);
+  --color-faint: var(--sl-color-gray-4);
+  --color-accent-main: var(--sl-color-accent);
+  --color-accent-bright: var(--sl-color-accent-high);
+  --color-tone-green: var(--sl-color-green);
+  --color-tone-green-low: var(--sl-color-green-low);
+  --color-tone-green-high: var(--sl-color-green-high);
+  --color-tone-blue: var(--sl-color-blue);
+  --color-tone-blue-low: var(--sl-color-blue-low);
+  --color-tone-blue-high: var(--sl-color-blue-high);
+  --color-tone-orange: var(--sl-color-orange);
+  --color-tone-orange-low: var(--sl-color-orange-low);
+  --color-tone-orange-high: var(--sl-color-orange-high);
+  --color-tone-purple: var(--sl-color-purple);
+  --color-tone-purple-low: var(--sl-color-purple-low);
+  --color-tone-purple-high: var(--sl-color-purple-high);
+  --animate-grimoire-float: grimoire-float 7s ease-in-out infinite;
+}
+
+@keyframes grimoire-float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before {
+    border: 0 solid;
+  }
+
+  html {
+    @apply scroll-smooth motion-reduce:scroll-auto;
+  }
+}
+
+@layer components {
+  header.header .site-title {
+    @apply gap-2.5 font-semibold tracking-tight;
+  }
+
+  header.header .site-title img {
+    @apply size-7 rounded-md;
+  }
+
+  html[data-has-hero] body {
+    @apply bg-no-repeat bg-[image:radial-gradient(ellipse_70%_42%_at_50%_-6%,color-mix(in_oklab,var(--sl-color-green)_16%,transparent),transparent_72%),radial-gradient(ellipse_45%_32%_at_86%_12%,color-mix(in_oklab,var(--sl-color-purple)_11%,transparent),transparent_70%)];
+  }
+
+  html[data-has-hero][data-theme='light'] body {
+    @apply bg-[image:radial-gradient(ellipse_70%_42%_at_50%_-6%,color-mix(in_oklab,var(--sl-color-green)_11%,transparent),transparent_72%),radial-gradient(ellipse_45%_32%_at_86%_12%,color-mix(in_oklab,var(--sl-color-purple)_7%,transparent),transparent_70%)];
+  }
+
+  html[data-has-hero] .main-frame {
+    @apply relative;
+  }
+
+  html[data-has-hero] .main-frame::before {
+    @apply pointer-events-none absolute inset-x-0 top-0 -z-10 h-144 content-[''] bg-[image:radial-gradient(color-mix(in_oklab,var(--sl-color-gray-4)_35%,transparent)_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_85%_75%_at_50%_18%,#000_18%,transparent_78%)];
+  }
+
+  html[data-has-hero] .hero {
+    @apply gap-[clamp(2rem,4vw,3.5rem)] py-[clamp(1.75rem,4.5vmin,4.25rem)];
+  }
+
+  html[data-has-hero] .hero h1 {
+    @apply text-[clamp(2.15rem,1.25rem+3.2vw,3.5rem)] leading-[1.18] font-bold tracking-tight;
+  }
+
+  html[data-has-hero] .hero .grimoire-accent {
+    @apply bg-linear-120 from-tone-green-high from-10% via-tone-blue-high via-58% to-tone-purple-high bg-clip-text text-transparent;
+  }
+
+  html[data-has-hero] .hero .tagline {
+    @apply max-w-[44ch] text-[clamp(0.98rem,0.88rem+0.45vw,1.15rem)] leading-relaxed text-body;
+  }
+
+  html[data-has-hero] .hero > img {
+    @apply w-[min(76%,20rem)] drop-shadow-[0_20px_36px_color-mix(in_oklab,var(--sl-color-green)_16%,transparent)] motion-safe:animate-grimoire-float min-[50rem]:w-[min(100%,24.5rem)];
+  }
+
+  html[data-has-hero] .hero .actions {
+    @apply gap-x-4 gap-y-3;
+  }
+
+  html[data-has-hero] .hero .sl-link-button {
+    @apply rounded-[0.65rem] px-5 py-2.5 font-medium transition-all duration-200 hover:-translate-y-0.5;
+  }
+}

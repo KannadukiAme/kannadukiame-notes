@@ -1,0 +1,25 @@
+---
+title: '首页'
+description: 神無月雨的个人技术笔记站点，记录网络代理、虚拟化、Linux 系统与个人家庭服务器的折腾心得与排障实录。
+template: splash
+hero:
+  title: '神無月雨''s <span class="grimoire-accent">魔導書</span>'
+  tagline: 收录网络代理、虚拟化、Linux 系统与个人家庭服务器的折腾心得、架构笔记与排障实录。
+  image:
+    dark: ../../assets/grimoire-hero-dark.svg
+    light: ../../assets/grimoire-hero-light.svg
+    alt: "神無月雨's 魔導書 技术图腾"
+  actions:
+    - text: 翻开魔導書
+      link: /guides/example/
+      icon: open-book
+      variant: primary
+    - text: 最近更新
+      link: '#recent-notes'
+      icon: down-arrow
+      variant: secondary
+---
+
+import NotesOverview from '../../components/NotesOverview.astro'
+
+<NotesOverview limit={6} />

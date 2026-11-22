@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420" fill="none">
+  <defs>
+    <radialGradient id="auraLight" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2d8a64" stop-opacity="0.18"/>
+      <stop offset="55%" stop-color="#8b5cf6" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cardGradLight" x1="60" y1="115" x2="360" y2="310" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f4f7f5"/>
+    </linearGradient>
+    <linearGradient id="accentStrokeLight" x1="80" y1="110" x2="340" y2="310" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2a825e" stop-opacity="0.65"/>
+      <stop offset="50%" stop-color="#4e74b8" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#8b4fa3" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="spineGlowLight" x1="210" y1="145" x2="210" y2="288" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2a825e" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#2a825e" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Arcane Aura -->
+  <circle cx="210" cy="210" r="196" fill="url(#auraLight)"/>
+
+  <!-- Astrolabe / Grimoire Geometry Rings -->
+  <circle cx="210" cy="210" r="176" stroke="#2a825e" stroke-opacity="0.24" stroke-width="1.2" stroke-dasharray="4 6"/>
+  <circle cx="210" cy="210" r="152" stroke="#64748b" stroke-opacity="0.18" stroke-width="1"/>
+  <circle cx="210" cy="210" r="126" stroke="#8b4fa3" stroke-opacity="0.18" stroke-width="1" stroke-dasharray="2 8"/>
+
+  <!-- Geometric Compass Lines -->
+  <path d="M210 26V52M210 368V394M26 210H52M368 210H394" stroke="#2a825e" stroke-opacity="0.45" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M84 84L102 102M318 318L336 336M336 84L318 102M102 318L84 336" stroke="#4e74b8" stroke-opacity="0.32" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Back Shadow Stack -->
+  <rect x="86" y="132" width="248" height="176" rx="16" fill="#eef3f0" stroke="#cbd5d0" stroke-width="1.2" transform="rotate(-3 210 220)"/>
+  <rect x="84" y="124" width="252" height="176" rx="16" fill="#f7faf8" stroke="#2a825e" stroke-opacity="0.28" stroke-width="1.2" transform="rotate(2 210 212)"/>
+
+  <!-- Main Grimoire Terminal Codex -->
+  <rect x="74" y="116" width="272" height="184" rx="16" fill="url(#cardGradLight)" stroke="url(#accentStrokeLight)" stroke-width="1.6"/>
+
+  <!-- Header Bar -->
+  <path d="M75 148H345" stroke="#e2e8e5" stroke-width="1.2"/>
+  <circle cx="96" cy="132" r="4" fill="#dc6b60"/>
+  <circle cx="111" cy="132" r="4" fill="#d99b38"/>
+  <circle cx="126" cy="132" r="4" fill="#2d8a64"/>
+  <text x="216" y="136" text-anchor="middle" fill="#64706a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="10.5" letter-spacing="0.06em">grimoire://kannadukiame</text>
+
+  <!-- Book Spine Divider -->
+  <line x1="210" y1="154" x2="210" y2="290" stroke="url(#spineGlowLight)" stroke-width="1.5"/>
+
+  <!-- Left Page: Proxy / Network Topology Constellation -->
+  <g>
+    <text x="94" y="170" fill="#237554" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="9.5" font-weight="600" letter-spacing="0.08em">TOPOLOGY</text>
+    <path d="M106 206C126 184 156 184 178 202" stroke="#2d8a64" stroke-opacity="0.7" stroke-width="1.5"/>
+    <path d="M106 206C122 232 146 250 182 252" stroke="#4e74b8" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="3 3"/>
+    <path d="M178 202C186 222 186 238 182 252" stroke="#8b4fa3" stroke-opacity="0.6" stroke-width="1.4"/>
+    <path d="M106 206L142 226L178 202" stroke="#c48329" stroke-opacity="0.6" stroke-width="1.3"/>
+    <path d="M142 226L114 264L182 252" stroke="#2d8a64" stroke-opacity="0.5" stroke-width="1.3"/>
+
+    <circle cx="106" cy="206" r="6" fill="#eef7f3" stroke="#2d8a64" stroke-width="2"/>
+    <circle cx="178" cy="202" r="6" fill="#eef3fc" stroke="#4e74b8" stroke-width="2"/>
+    <circle cx="142" cy="226" r="7.5" fill="#e5f5ee" stroke="#237554" stroke-width="2.2"/>
+    <circle cx="142" cy="226" r="2.6" fill="#237554"/>
+    <circle cx="114" cy="264" r="5.5" fill="#f6effa" stroke="#8b4fa3" stroke-width="1.8"/>
+    <circle cx="182" cy="252" r="5.5" fill="#fcf5ea" stroke="#c48329" stroke-width="1.8"/>
+
+    <rect x="94" y="275" width="96" height="14" rx="4" fill="#ebf6f1" stroke="#2d8a64" stroke-opacity="0.35" stroke-width="1"/>
+    <circle cx="103" cy="282" r="2.5" fill="#237554"/>
+    <text x="111" y="285.5" fill="#256148" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.5" font-weight="600">MESH · 12ms</text>
+  </g>
+
+  <!-- Right Page: Linux / VM / Homelab Console -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <text x="226" y="170" fill="#7c4296" font-size="9.5" font-weight="600" letter-spacing="0.08em">CODEX.SH</text>
+
+    <text x="226" y="191" fill="#237554" font-size="10" font-weight="700">$</text>
+    <text x="237" y="191" fill="#2e3431" font-size="10">pve-ctl status</text>
+    <rect x="226" y="199" width="84" height="5" rx="2.5" fill="#e2e8e5"/>
+    <rect x="226" y="199" width="60" height="5" rx="2.5" fill="#2d8a64" fill-opacity="0.8"/>
+
+    <text x="226" y="220" fill="#4e74b8" font-size="10" font-weight="700">$</text>
+    <text x="237" y="220" fill="#2e3431" font-size="10">zpool status</text>
+    <rect x="226" y="228" width="100" height="5" rx="2.5" fill="#e2e8e5"/>
+    <rect x="226" y="228" width="86" height="5" rx="2.5" fill="#4e74b8" fill-opacity="0.8"/>
+
+    <text x="226" y="249" fill="#b8761f" font-size="10" font-weight="700">$</text>
+    <text x="237" y="249" fill="#2e3431" font-size="10">sing-box run</text>
+    <rect x="226" y="257" width="94" height="5" rx="2.5" fill="#e2e8e5"/>
+    <rect x="226" y="257" width="72" height="5" rx="2.5" fill="#8b4fa3" fill-opacity="0.75"/>
+
+    <text x="226" y="284" fill="#237554" font-size="10" font-weight="700">&gt;_</text>
+    <rect x="244" y="275" width="7" height="11" rx="1.5" fill="#237554" fill-opacity="0.85"/>
+  </g>
+
+  <!-- Top: Arcane Star Crest -->
+  <g transform="translate(210 62)">
+    <path d="M0 -14L3.5 -3.5L14 0L3.5 3.5L0 14L-3.5 3.5L-14 0L-3.5 -3.5Z" fill="#2d8a64"/>
+    <circle cx="0" cy="0" r="3" fill="#ffffff"/>
+  </g>
+
+  <!-- Orbiting Badges -->
+  <g transform="translate(86 84)">
+    <rect x="-26" y="-12" width="52" height="24" rx="12" fill="#edf7f2" stroke="#2d8a64" stroke-width="1.3"/>
+    <text x="0" y="3.5" text-anchor="middle" fill="#1f6b4c" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="10" font-weight="600">PROXY</text>
+  </g>
+
+  <g transform="translate(334 84)">
+    <rect x="-24" y="-12" width="48" height="24" rx="12" fill="#eef4fc" stroke="#4e74b8" stroke-width="1.3"/>
+    <text x="0" y="3.5" text-anchor="middle" fill="#375996" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="10" font-weight="600">KVM</text>
+  </g>
+
+  <g transform="translate(86 338)">
+    <rect x="-27" y="-12" width="54" height="24" rx="12" fill="#fcf5e8" stroke="#c48329" stroke-width="1.3"/>
+    <text x="0" y="3.5" text-anchor="middle" fill="#996114" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="10" font-weight="600">LINUX</text>
+  </g>
+
+  <g transform="translate(334 338)">
+    <rect x="-25" y="-12" width="50" height="24" rx="12" fill="#f7effb" stroke="#8b4fa3" stroke-width="1.3"/>
+    <text x="0" y="3.5" text-anchor="middle" fill="#6f3985" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="10" font-weight="600">LAB</text>
+  </g>
+
+  <!-- Bottom Rack Blade Indicator -->
+  <g transform="translate(210 356)">
+    <rect x="-54" y="-11" width="108" height="22" rx="11" fill="#ffffff" stroke="#d0d8d4" stroke-width="1.2"/>
+    <circle cx="-36" cy="0" r="3" fill="#2d8a64"/>
+    <circle cx="-24" cy="0" r="3" fill="#4e74b8"/>
+    <circle cx="-12" cy="0" r="3" fill="#8b4fa3"/>
+    <text x="18" y="3.5" text-anchor="middle" fill="#4f5954" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="9.5" font-weight="500">24/7 ONLINE</text>
+  </g>
+</svg>

@@ -1,0 +1,206 @@
+---
+import { getGrimoireOverview, type CategoryTone } from '../lib/notes'
+
+interface Props {
+  limit?: number
+}
+
+const { limit = 6 } = Astro.props
+const overview = await getGrimoireOverview(limit)
+
+const TONE_CLASSES: Record<
+  CategoryTone,
+  { dot: string; count: string; badge: string }
+> = {
+  green: {
+    dot: 'bg-tone-green',
+    count: 'text-tone-green-high',
+    badge: 'bg-tone-green-low border-tone-green/45 text-tone-green-high',
+  },
+  blue: {
+    dot: 'bg-tone-blue',
+    count: 'text-tone-blue-high',
+    badge: 'bg-tone-blue-low border-tone-blue/45 text-tone-blue-high',
+  },
+  orange: {
+    dot: 'bg-tone-orange',
+    count: 'text-tone-orange-high',
+    badge: 'bg-tone-orange-low border-tone-orange/45 text-tone-orange-high',
+  },
+  purple: {
+    dot: 'bg-tone-purple',
+    count: 'text-tone-purple-high',
+    badge: 'bg-tone-purple-low border-tone-purple/45 text-tone-purple-high',
+  },
+}
+---
+
+<div class="not-content mt-4 flex flex-col gap-12 border-t border-ui-border pt-10">
+  <!-- 笔记数量与统计概览 -->
+  <section aria-labelledby="stats-heading">
+    <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <div class="mb-1.5 font-mono text-xs font-semibold tracking-[0.14em] text-accent-bright">
+          ARCHIVE TELEMETRY
+        </div>
+        <h2
+          id="stats-heading"
+          class="m-0 text-2xl leading-tight font-semibold tracking-tight text-heading sm:text-[1.7rem]"
+        >
+          魔導書藏书统计
+        </h2>
+      </div>
+
+      {overview.categories.length > 0 && (
+        <div class="flex flex-wrap gap-2" aria-label="各分类笔记数量">
+          {overview.categories.map((cat) => {
+            const tone = TONE_CLASSES[cat.tone]
+            return (
+              <span class="inline-flex items-center gap-1.5 rounded-full border border-ui-border bg-ui-bg px-2.5 py-1 text-xs text-body">
+                <span
+                  class:list={['size-1.5 rounded-full', tone.dot]}
+                  aria-hidden="true"
+                />
+                <span>{cat.label}</span>
+                <span
+                  class:list={[
+                    'font-mono font-semibold tabular-nums',
+                    tone.count,
+                  ]}
+                >
+                  {cat.count}
+                </span>
+              </span>
+            )
+          })}
+        </div>
+      )}
+    </div>
+
+    <div class="grid grid-cols-2 gap-3.5 lg:grid-cols-4 lg:gap-4">
+      <div class="flex flex-col gap-1.5 rounded-2xl border border-tone-green/50 bg-linear-145 from-tone-green-low/75 via-ui-bg to-ui-bg p-5 transition-colors duration-200 hover:border-tone-green">
+        <span class="text-xs font-medium text-muted sm:text-sm">收录笔记</span>
+        <div class="mt-0.5 flex items-baseline gap-1.5">
+          <span class="font-mono text-3xl leading-none font-bold tabular-nums text-tone-green-high sm:text-4xl">
+            {overview.totalNotes}
+          </span>
+          <span class="text-sm text-muted">篇</span>
+        </div>
+        <span class="text-xs text-faint">持续整理与扩充中</span>
+      </div>
+
+      <div class="flex flex-col gap-1.5 rounded-2xl border border-ui-border bg-ui-bg p-5 transition-colors duration-200 hover:border-faint">
+        <span class="text-xs font-medium text-muted sm:text-sm">活跃分类</span>
+        <div class="mt-0.5 flex items-baseline gap-1.5">
+          <span class="font-mono text-3xl leading-none font-bold tabular-nums text-heading sm:text-4xl">
+            {overview.totalCategories}
+          </span>
+          <span class="text-sm text-muted">个</span>
+        </div>
+        <span class="text-xs text-faint">按技术主题归档</span>
+      </div>
+
+      <div class="flex flex-col gap-1.5 rounded-2xl border border-ui-border bg-ui-bg p-5 transition-colors duration-200 hover:border-faint">
+        <span class="text-xs font-medium text-muted sm:text-sm">累计字数</span>
+        <div class="mt-0.5 flex items-baseline gap-1.5">
+          <span class="font-mono text-3xl leading-none font-bold tabular-nums text-heading sm:text-4xl">
+            {overview.formattedWords}
+          </span>
+          <span class="text-sm text-muted">字</span>
+        </div>
+        <span class="text-xs text-faint">正文有效阅读量估算</span>
+      </div>
+
+      <div class="flex flex-col gap-1.5 rounded-2xl border border-ui-border bg-ui-bg p-5 transition-colors duration-200 hover:border-faint">
+        <span class="text-xs font-medium text-muted sm:text-sm">最近更新</span>
+        <div class="mt-0.5 flex items-baseline gap-1.5">
+          <span class="font-mono text-xl leading-tight font-bold tracking-tight tabular-nums text-heading sm:text-2xl">
+            {overview.latestFormattedDate}
+          </span>
+        </div>
+        <span class="text-xs text-faint">最新笔记修订日期</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 最近更新笔记 -->
+  <section
+    id="recent-notes"
+    class="scroll-mt-20"
+    aria-labelledby="recent-heading"
+  >
+    <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <div class="mb-1.5 font-mono text-xs font-semibold tracking-[0.14em] text-accent-bright">
+          RECENT INSCRIPTIONS
+        </div>
+        <h2
+          id="recent-heading"
+          class="m-0 text-2xl leading-tight font-semibold tracking-tight text-heading sm:text-[1.7rem]"
+        >
+          最近更新笔记
+        </h2>
+      </div>
+      <span class="rounded-full border border-ui-border bg-surface-subtle px-3 py-1 font-mono text-xs text-muted">
+        共 {overview.totalNotes} 篇 · 展示最新 {overview.recentNotes.length} 篇
+      </span>
+    </div>
+
+    {overview.recentNotes.length > 0 ? (
+      <ul class="m-0 flex list-none flex-col gap-3 p-0">
+        {overview.recentNotes.map((note) => {
+          const tone = TONE_CLASSES[note.categoryTone]
+          return (
+            <li>
+              <a
+                href={note.href}
+                class="group flex flex-col gap-3 rounded-xl border border-ui-border bg-ui-bg px-5 py-4 text-inherit no-underline transition-all duration-200 hover:translate-x-1 hover:border-accent-main focus-visible:translate-x-1 focus-visible:border-accent-main focus-visible:outline-none md:flex-row md:items-center md:justify-between md:gap-6"
+              >
+                <div class="min-w-0 flex-1">
+                  <div class="mb-1.5 flex flex-wrap items-center gap-2.5">
+                    <span
+                      class:list={[
+                        'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap',
+                        tone.badge,
+                      ]}
+                    >
+                      {note.categoryLabel}
+                    </span>
+                    <span class="text-base font-semibold text-heading transition-colors duration-200 group-hover:text-accent-bright group-focus-visible:text-accent-bright">
+                      {note.title}
+                    </span>
+                  </div>
+                  <p class="m-0 line-clamp-1 text-sm leading-relaxed text-muted">
+                    {note.description}
+                  </p>
+                </div>
+
+                <div class="flex shrink-0 items-center gap-3.5">
+                  <time
+                    class="font-mono text-xs tabular-nums text-muted"
+                    datetime={note.updatedAt?.toISOString()}
+                  >
+                    {note.formattedDate}
+                  </time>
+                  <span
+                    class="text-base text-faint transition-all duration-200 group-hover:translate-x-1 group-hover:text-accent-bright group-focus-visible:translate-x-1 group-focus-visible:text-accent-bright"
+                    aria-hidden="true"
+                  >
+                    →
+                  </span>
+                </div>
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+    ) : (
+      <div class="rounded-xl border border-dashed border-ui-border px-6 py-8 text-center text-sm text-muted">
+        <p class="m-0">
+          魔導書尚未收录正文笔记，请在 <code>src/content/docs/</code> 下添加
+          Markdown / MDX 文件，此处会自动统计并展示最新更新。
+        </p>
+      </div>
+    )}
+  </section>
+</div>

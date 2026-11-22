@@ -1,0 +1,21 @@
+{
+  "name": "kannadukiame-notes",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.43.1",
+    "@astrojs/starlight-tailwind": "^5.0.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^7.3.6",
+    "sharp": "^0.35.3",
+    "starlight-theme-rapide": "^0.7.0",
+    "tailwindcss": "^4.3.5"
+  }
+}
