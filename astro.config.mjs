@@ -27,12 +27,8 @@ export default defineConfig({
       plugins: [starlightThemeRapide()],
       sidebar: [
         {
-          label: '实践指南',
-          items: [{ autogenerate: { directory: 'guides' } }],
-        },
-        {
-          label: '技术参考',
-          items: [{ autogenerate: { directory: 'reference' } }],
+          label: '网络代理',
+          items: [{ autogenerate: { directory: 'network-proxy' } }],
         },
       ],
     }),

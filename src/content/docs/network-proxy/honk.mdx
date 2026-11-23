@@ -1,0 +1,313 @@
+---
+title: honk
+description: honk 作为 openwrt 软路由的透明代理工具，本文主要记录安装、配置和使用方法。
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+
+honk 是 linux 平台下的透明代理引擎。
+
+本文记录如何将 honk 部署在 openwrt 软路由上作为透明代理网关。
+
+截至到2026年11月，使用相关工具的版本号如下
+
+- ImmortalWrt `25.12.1`
+- honk `v0.1.0-beta.6`
+- doona `v0.1.0-rc.6`
+
+## 前置条件
+
+在使用 honk 部署到 openwrt 之前，需要满足以下条件
+
+### 系统与内核版本
+
+需使用 OpenWrt 25.12+（Linux 内核 6.12）。
+
+24.10（内核 6.6）不支持通过该 feed 安装（opkg 无仓库标签，且 honk 需要内核 6.12+）
+
+23.05 及更早版本内核过旧，不支持。
+
+### CPU 架构与 Target
+
+仅支持 64 位架构（如 x86_64、aarch64_cortex-a53、aarch64_cortex-a72、aarch64_cortex-a76、aarch64_generic 等），不支持 32 位 ARM 或 MIPS。
+
+可在路由器 SSH 中执行以下命令查看当前版本、架构与 Target：
+
+```bash
+. /etc/openwrt_release
+echo $DISTRIB_RELEASE $DISTRIB_ARCH $DISTRIB_TARGET
+```
+
+官方 OpenWrt 内核缺少 BTF 信息，必须位于文档支持的 25.12.6 目标列表内，并依赖该源提供的 vmlinux-btf。
+
+## 安装
+
+### 导入签名公钥
+
+```bash
+wget -O /etc/apk/keys/daeuniverse.pem https://openwrt.daeuniverse.org/public-key.pem
+```
+
+### 添加软件源（含 packages 与 kmods）
+
+<Tabs>
+  <TabItem label="OpenWrt">
+  ```bash
+    . /etc/openwrt_release
+    FEED=https://openwrt.daeuniverse.org/$(echo "$DISTRIB_RELEASE" | cut -d. -f1-2)
+    cat > /etc/apk/repositories.d/daeuniverse.list <<EOF
+    @daeuniverse $FEED/packages/$DISTRIB_ARCH/packages.adb
+    @daeuniverse $FEED/kmods/$DISTRIB_RELEASE/$DISTRIB_TARGET/packages.adb
+    EOF
+    apk update
+  ```
+  </TabItem>
+  <TabItem label="ImmortalWrt">
+  ```bash
+    . /etc/openwrt_release
+    FEED=https://openwrt.daeuniverse.org/$(echo "$DISTRIB_RELEASE" | cut -d. -f1-2)
+    cat > /etc/apk/repositories.d/daeuniverse.list <<EOF
+    @daeuniverse $FEED/packages/$DISTRIB_ARCH/packages.adb
+    EOF
+    apk update
+  ```
+  </TabItem>
+</Tabs>
+
+:::caution
+注意必须保留 @daeuniverse 标签，否则 apk 会优先选用系统源中的同名包。
+:::
+
+### 安装 honk 与 LuCI 插件
+
+```bash
+apk add honk@daeuniverse luci-app-honk@daeuniverse
+```
+
+:::note
+如不需要 LuCI 界面，可省略 luci-app-honk@daeuniverse。
+:::
+
+### 修改接口并启动服务
+
+检查 /etc/honk/config.dae 中的局域网接口设置（默认通常为 br-lan，若不同需先修改）。
+
+在 LuCI Services → honk 中开启，或通过命令行启用并启动
+
+```bash
+uci set honk.config.enabled=1
+uci commit honk
+/etc/init.d/honk start
+```
+
+### 访问 doona 面板
+
+局域网内通过路由器 IP 访问 http://IP:9527/
+
+首次访问创建管理员账号后即可添加节点/订阅与路由规则。
+
+## 配置
+
+honk 的配置语法与 dae 的配置语法类似，默认路径为 `/etc/honk/config.dae`
+
+主要包含 global、dns、routing、experimental、group、subscription 六个部分。其中 subscription 通过 doona 面板进行配置即可。
+
+### 全局配置
+
+这部分默认配置即可，主要是设置日志等级、监听端口、透明代理接口等。
+
+```
+global {
+    wan_interface: auto
+    lan_interface: br-lan
+    log_level: info
+    dial_mode: domain++
+    auto_config_kernel_parameter: true
+    data_dir: '/etc/honk/data'
+    # Empty: log to stdout, which procd forwards to syslog/logread.
+    log_file: ''
+    tcp_check_url: 'https://www.gstatic.com/generate_204'
+    tcp_check_http_method: HEAD
+    check_interval: 300s
+    bootstrap_resolver: '1.1.1.1:53'
+    # Hold ambiguous LAN UDP first packets through NFQUEUE. Requires the
+    # nfnetlink_queue and nft_queue kernel modules, which the package depends on.
+    nfqueue_enable: true
+
+    allow_insecure: true
+}
+```
+
+### 实验性功能
+
+这里启用了 native API，开启内置的 doona 面板，允许通过浏览器访问 http://IP:9527/ 进行配置。
+
+:::note
+如果要对 doona 面板进行反向代理，请务必将 allowed_hosts 和 allow_origins 设置为你自己的域名，否则浏览器会报错。
+:::
+
+```
+experimental {
+    # Clash-compatible API (optional; served on loopback only). The embedded
+    # doona UI uses the native API below.
+    clash_api {
+        external_controller: '127.0.0.1:9090'
+        default_mode: 'Rule'
+    }
+    native_api {
+        enabled: true
+        listen: '0.0.0.0:9527'
+        password_auth: true
+        config_write: true
+        allowed_hosts: 'yourdomain.com'
+        allow_origins: 'https://yourdomain.com'
+        ui: 'embedded'
+        # ui: 'embedded-lite'   # doona lite, honk v0.1.0-beta.4 and later
+    }
+    cache_file {
+        enabled: true
+    }
+}
+```
+
+### DNS
+
+国内域名走阿里 DNS 或者宽带运营商提供的 DNS，国外域名走 Cloudflare DoH，自建局域网域名走 dnsmasq
+
+:::tip
+如果不需要自建局域网域名解析，可以删除 dnsmasq 以及 yourdomain.com 的相关配置。
+:::
+
+```
+dns {
+    upstream {
+        dnsmasq: 'udp://127.0.0.1:53' -> direct
+        local: 'udp://223.5.5.5:53' -> direct
+        proxy: 'https://cloudflare-dns.com/dns-query' -> proxy
+    }
+    routing {
+        request {
+            qname(suffix: yourdomain.com) && qtype(aaaa) -> reject
+            qname(suffix: yourdomain.com) && qtype(https, svcb) -> reject
+            qname(suffix: yourdomain.com) -> dnsmasq
+            qname(geosite: cn) -> local
+            fallback: proxy
+        }
+        response {
+            fallback: accept
+        }
+    }
+}
+```
+
+### 路由
+
+私有IP、局域网和多播地址不走代理，UDP/443 阻断。
+
+基本的分流规则是国内域名和 IP 走直连，其余流量走代理。
+
+这里按照自己的需求细化了分流规则，增加了 Microsoft、Apple、Google、OpenAI、DMM、Bahamut、Pikpak、Steam 等网站的分流规则。
+
+:::tip
+steam@cn 以及 steamserver.net 走直连，下载游戏时可以节省机场流量。
+:::
+
+完整配置如下
+
+```
+routing {
+  # NetworkManager
+  pname(NetworkManager) -> direct
+  # dae presets: the LAN and multicast stay off the proxy
+  dip(224.0.0.0/3, 'ff00::/8') -> direct
+  dip(geoip:private) -> direct
+  # Block UDP/443
+  l4proto(udp) && dport(443) -> block
+  # Microsoft
+  domain(geosite:microsoft) -> direct
+  # Apple
+  domain(geosite:apple) -> apple
+  # Google
+  domain(geosite:google) -> google
+  # OpenAI
+  domain(geosite:openai) -> openai
+  # DMM
+  domain(geosite:dmm) -> dmm
+  # Bahamut
+  domain(geosite:bahamut) -> bahamut
+  # Pikpak
+  domain(geosite:pikpak) -> pikpak
+  # Steam
+  domain(geosite:steam@cn) -> direct
+  domain(suffix: steamserver.net) -> direct
+  # GFW list
+  domain(geosite:gfw) -> proxy
+  # Mainland China
+  domain(geosite:cn) -> direct
+  dip(geoip:cn) -> direct
+  fallback: proxy
+}
+```
+
+### 订阅分组
+
+同上，增加了 Apple、Google、OpenAI、DMM、Bahamut、Pikpak 等网站的分组规则。
+
+```
+group {
+  # 代理
+  proxy {
+    filter: group('proxy', 'auto')
+    filter: !name(keyword: '网站', keyword: '地址', keyword: '剩余', keyword: '过期', keyword: '时间', keyword: '有效', keyword: '官网', keyword: '套餐')
+    policy: select
+    default: 'auto'
+  }
+  # 自动选择
+  auto {
+    filter: !name(keyword: '网站', keyword: '地址', keyword: '剩余', keyword: '过期', keyword: '时间', keyword: '有效', keyword: '官网', keyword: '套餐')
+    policy: score
+  }
+  # Google
+  google {
+    filter: group('proxy', 'auto')
+    filter: !name('direct', 'block')
+    policy: select
+    default: 'proxy'
+  }
+  # OpenAI
+  openai {
+    filter: group('proxy', 'auto')
+    filter: !name('direct', 'block')
+    policy: select
+    default: 'proxy'
+  }
+  # DMM
+  dmm {
+    filter: name(keyword: '🇯🇵', keyword: 'JP', keyword: 'jp', keyword: '日本', keyword: '日', keyword: 'Japan')
+    policy: select
+  }
+  # Bahamut
+  bahamut {
+    filter: name(keyword: '🇹🇼', keyword: 'TW', keyword: 'tw', keyword: '台湾', keyword: '臺灣', keyword: '台', keyword: 'Taiwan')
+    policy: select
+  }
+  # Pikpak
+  pikpak {
+    filter: name(keyword: '0.1x', keyword: '0.2x', keyword: '0.3x', keyword: '0.4x', keyword: '0.5x', keyword: '0.6x')
+    policy: select
+  }
+  # Apple
+  apple {
+    filter: group('proxy', 'auto')
+    filter: !name('direct', 'block')
+    policy: select
+    default: 'proxy'
+  }
+}
+```
+
+## 参考链接
+
+- [daeuniverse/honk](https://github.com/daeuniverse/honk)
+- [Zakkaus/doona](https://github.com/Zakkaus/doona)
+- [honk 官方文档](https://daeuniverse.org/honk/)
