@@ -6,9 +6,20 @@ import starlightThemeRapide from 'starlight-theme-rapide'
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://notes.madoka.xx.kg',
   integrations: [
     starlight({
       title: "神無月雨's 魔導書",
+      social: [
+        {
+          icon: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/KannadukiAme/kannadukiame-notes',
+        },
+      ],
+      editLink: {
+        baseUrl: 'https://github.com/KannadukiAme/kannadukiame-notes/edit/main',
+      },
       description:
         '神無月雨的个人技术笔记站点，收录网络代理、虚拟化、Linux 与个人家庭服务器的折腾实录与技术沉淀。',
       locales: {
