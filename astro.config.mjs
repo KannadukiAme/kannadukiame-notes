@@ -41,6 +41,10 @@ export default defineConfig({
           label: '网络代理',
           items: [{ autogenerate: { directory: 'network-proxy' } }],
         },
+        {
+          label: 'Linux',
+          items: [{ autogenerate: { directory: 'linux' } }],
+        },
       ],
     }),
   ],
