@@ -52,25 +52,29 @@ wget -O /etc/apk/keys/daeuniverse.pem https://openwrt.daeuniverse.org/public-key
 
 <Tabs>
   <TabItem label="OpenWrt">
-  ```bash
-    . /etc/openwrt_release
-    FEED=https://openwrt.daeuniverse.org/$(echo "$DISTRIB_RELEASE" | cut -d. -f1-2)
-    cat > /etc/apk/repositories.d/daeuniverse.list <<EOF
-    @daeuniverse $FEED/packages/$DISTRIB_ARCH/packages.adb
-    @daeuniverse $FEED/kmods/$DISTRIB_RELEASE/$DISTRIB_TARGET/packages.adb
-    EOF
-    apk update
-  ```
+
+```bash
+. /etc/openwrt_release
+FEED=https://openwrt.daeuniverse.org/$(echo "$DISTRIB_RELEASE" | cut -d. -f1-2)
+cat > /etc/apk/repositories.d/daeuniverse.list <<EOF
+@daeuniverse $FEED/packages/$DISTRIB_ARCH/packages.adb
+@daeuniverse $FEED/kmods/$DISTRIB_RELEASE/$DISTRIB_TARGET/packages.adb
+EOF
+apk update
+```
+
   </TabItem>
   <TabItem label="ImmortalWrt">
-  ```bash
-    . /etc/openwrt_release
-    FEED=https://openwrt.daeuniverse.org/$(echo "$DISTRIB_RELEASE" | cut -d. -f1-2)
-    cat > /etc/apk/repositories.d/daeuniverse.list <<EOF
-    @daeuniverse $FEED/packages/$DISTRIB_ARCH/packages.adb
-    EOF
-    apk update
-  ```
+
+```bash
+. /etc/openwrt_release
+FEED=https://openwrt.daeuniverse.org/$(echo "$DISTRIB_RELEASE" | cut -d. -f1-2)
+cat > /etc/apk/repositories.d/daeuniverse.list <<EOF
+@daeuniverse $FEED/packages/$DISTRIB_ARCH/packages.adb
+EOF
+apk update
+```
+
   </TabItem>
 </Tabs>
 
@@ -206,13 +210,11 @@ dns {
 
 基本的分流规则是国内域名和 IP 走直连，其余流量走代理。
 
-这里按照自己的需求细化了分流规则，增加了 Microsoft、Apple、Google、OpenAI、DMM、Bahamut、Pikpak、Steam 等网站的分流规则。
+这里按照自己的需求细化了分流规则，增加了 Apple、Google、OpenAI、DMM、Bahamut、Pikpak、Steam 等网站的分流规则。
 
 :::tip
 steam@cn 以及 steamserver.net 走直连，下载游戏时可以节省机场流量。
 :::
-
-完整配置如下
 
 ```
 routing {
@@ -223,8 +225,6 @@ routing {
   dip(geoip:private) -> direct
   # Block UDP/443
   l4proto(udp) && dport(443) -> block
-  # Microsoft
-  domain(geosite:microsoft) -> direct
   # Apple
   domain(geosite:apple) -> apple
   # Google
@@ -257,7 +257,7 @@ routing {
 group {
   # 代理
   proxy {
-    filter: group('proxy', 'auto')
+    filter: group('auto')
     filter: !name(keyword: '网站', keyword: '地址', keyword: '剩余', keyword: '过期', keyword: '时间', keyword: '有效', keyword: '官网', keyword: '套餐')
     policy: select
     default: 'auto'
@@ -269,14 +269,21 @@ group {
   }
   # Google
   google {
-    filter: group('proxy', 'auto')
+    filter: group('proxy')
     filter: !name('direct', 'block')
     policy: select
     default: 'proxy'
   }
   # OpenAI
   openai {
-    filter: group('proxy', 'auto')
+    filter: group('proxy')
+    filter: !name('direct', 'block')
+    policy: select
+    default: 'proxy'
+  }
+  # Apple
+  apple {
+    filter: group('proxy')
     filter: !name('direct', 'block')
     policy: select
     default: 'proxy'
@@ -295,13 +302,6 @@ group {
   pikpak {
     filter: name(keyword: '0.1x', keyword: '0.2x', keyword: '0.3x', keyword: '0.4x', keyword: '0.5x', keyword: '0.6x')
     policy: select
-  }
-  # Apple
-  apple {
-    filter: group('proxy', 'auto')
-    filter: !name('direct', 'block')
-    policy: select
-    default: 'proxy'
   }
 }
 ```
