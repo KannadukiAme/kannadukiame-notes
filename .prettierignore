@@ -1,0 +1,4 @@
+# Build outputs & generated files
+dist/
+.astro/
+pnpm-lock.yaml
